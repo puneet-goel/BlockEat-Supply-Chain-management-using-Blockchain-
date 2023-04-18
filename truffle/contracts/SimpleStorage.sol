@@ -1,21 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-contract Product {
-    uint256 stockUnit;
-    uint256 productCode;
-    address ownerID;
-    uint256 productID;
-    uint256 productDate;
-    uint256 productPrice;
+contract SimpleStorage {
+  uint256 value;
 
-    mapping(uint256 => Item) items;
+  function read() public view returns (uint256) {
+    return value;
+  }
 
-    function read() public view returns (uint256) {
-        return value;
-    }
-
-    function write(uint256 newValue) public {
-        value = newValue;
-    }
+  function write(uint256 newValue) public {
+    value = newValue;
+  }
 }
