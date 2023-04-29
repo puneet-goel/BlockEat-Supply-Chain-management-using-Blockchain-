@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.21 <0.9.0;
+pragma experimental ABIEncoderV2;
 
 import "./Users.sol";
 
@@ -9,17 +10,26 @@ import "./Users.sol";
  */
 contract Distributor {
     using Users for Users.User;
+    using Users for Users.Info;
     Users.User private distributors;
 
-    function addDistributor(address newDistributor) public {
+    function addDistributor(
+        address newDistributor,
+        string memory name,
+        string memory location
+    ) public {
         require(
             !distributors.isExistingUser(newDistributor),
             "Distributor with this address already exists!"
         );
-        distributors.addUser(newDistributor);
+        distributors.addUser(newDistributor, name, location);
     }
 
     function isDistributor() public view returns (bool) {
         return distributors.isExistingUser(msg.sender);
+    }
+
+    function getDistributor() public view returns (Users.Info memory) {
+        return distributors.getUser(msg.sender);
     }
 }

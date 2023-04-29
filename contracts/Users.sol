@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.4.21 <0.9.0;
 
 /**
@@ -5,12 +6,24 @@ pragma solidity >=0.4.21 <0.9.0;
  * @dev Stores user addresses for different types of users.
  */
 library Users {
-    struct User {
-        mapping(address => bool) userAddresses;
+    struct Info {
+        string name;
+        string location;
     }
 
-    function addUser(User storage user, address userAddress) internal {
+    struct User {
+        mapping(address => bool) userAddresses;
+        mapping(address => Info) userDetails;
+    }
+
+    function addUser(
+        User storage user,
+        address userAddress,
+        string memory name,
+        string memory location
+    ) internal {
         user.userAddresses[userAddress] = true;
+        user.userDetails[userAddress] = Info({name: name, location: location});
     }
 
     function removeUser(User storage user, address userAddress) internal {
@@ -22,5 +35,16 @@ library Users {
         address userAddress
     ) internal view returns (bool) {
         return user.userAddresses[userAddress];
+    }
+
+    function getUser(
+        User storage user,
+        address userAddress
+    ) internal view returns (Info memory temp) {
+        if (user.userAddresses[userAddress]) {
+            return user.userDetails[userAddress];
+        } else {
+            return Info({name: "", location: ""});
+        }
     }
 }

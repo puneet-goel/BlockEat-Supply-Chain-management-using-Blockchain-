@@ -159,6 +159,12 @@ export default class Home extends React.Component {
 		let rows = [];
 		if (productDetailsArray && productDetailsArray.value.length > 0) {
 			productDetailsArray.value.forEach((productDetails) => {
+				if (
+					this.props.userType === USER_TYPES[0] &&
+					productDetails.producerAddress !== this.props.drizzleState.accounts[0]
+				)
+					return;
+
 				const status = this.fetchProductStatuses(productDetails);
 				const action = this.fetchProductStatusActions(productDetails);
 				const newRow = {
