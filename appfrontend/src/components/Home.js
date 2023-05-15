@@ -36,6 +36,34 @@ const cols = [
 	},
 ];
 
+const productProp = [
+	'productId',
+	'productName',
+	'productPrice',
+	'productQuantity',
+	'productStatus',
+	'productDesc',
+	'consumerAddress',
+	'retailerAddresses',
+	'distributorAddress',
+	'producerAddress',
+	'currentStatusUser',
+];
+
+const productDisplay = [
+	'Product Id',
+	'Product Name',
+	'Product Price',
+	'Product Quantity',
+	'Product Status',
+	'Product Description',
+	'Consumer Address',
+	'Retailer Addresses',
+	'Distributor Address',
+	'Producer Address',
+	'Current StatusUser',
+];
+
 export default class Home extends React.Component {
 	state = {
 		tabValue: 0,
@@ -333,11 +361,13 @@ export default class Home extends React.Component {
 							style={{ backgroundColor: '#92869f63', minHeight: 600 }}
 							elevation={3}
 						>
-							<div>
+							<div style={{ padding: '2em' }}>
 								<input
 									type='text'
 									name='product-id'
+									placeholder='Enter Product Id'
 									value={this.state.searchedProductId}
+									style={{ width: '60%', height: '3em' }}
 									onChange={(e) =>
 										this.setState({ searchedProductId: e.target.value })
 									}
@@ -346,6 +376,7 @@ export default class Home extends React.Component {
 								<Button
 									variant='contained'
 									color='secondary'
+									style={{ marginTop: '1em' }}
 									onClick={(e) =>
 										this.checkProductDetails(SupplyChainLifecycle)
 									}
@@ -354,9 +385,27 @@ export default class Home extends React.Component {
 								</Button>
 							</div>
 							<div>
-								{this.state.searchedProductDetails.map((ele) => {
-									return <div>{ele}</div>;
-								})}
+								{this.state.searchedProductDetails.length > 0 &&
+									productProp.map((ele, idx) => {
+										return (
+											<div
+												style={{
+													display: 'flex',
+													alignItems: 'center',
+													paddingLeft: '3em',
+												}}
+											>
+												<h3>{productDisplay[idx]}:</h3>
+												&nbsp;
+												<div style={{ fontSize: 'larger' }}>
+													{this.state.searchedProductDetails[ele]}
+												</div>
+											</div>
+										);
+									})}
+								{this.state.searchedProductDetails.length === 0 && (
+									<h1>No Product</h1>
+								)}
 							</div>
 						</Paper>
 					</div>

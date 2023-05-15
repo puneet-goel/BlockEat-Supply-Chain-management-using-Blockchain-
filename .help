@@ -1,0 +1,6 @@
+1. Start Ganache
+2. Go to contract folder (./contracts)
+  a. truffle compile
+  b. truffle migrate --reset
+3. Go to appfrontend folder (./appfrontend)
+  a. npm start
