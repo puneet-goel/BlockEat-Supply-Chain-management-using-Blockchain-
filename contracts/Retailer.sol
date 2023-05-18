@@ -29,7 +29,7 @@ contract Retailer {
         return retailers.isExistingUser(msg.sender);
     }
 
-    function getRetailer() public view returns (Users.Info memory) {
-        return retailers.getUser(msg.sender);
+    function getRetailer(address user) public view returns (Users.Info memory) {
+        return retailers.getUser(user);
     }
 }

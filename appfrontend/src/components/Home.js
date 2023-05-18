@@ -43,11 +43,9 @@ const productProp = [
 	'productQuantity',
 	'productStatus',
 	'productDesc',
-	'consumerAddress',
 	'retailerAddresses',
 	'distributorAddress',
 	'producerAddress',
-	'currentStatusUser',
 ];
 
 const productDisplay = [
@@ -57,12 +55,12 @@ const productDisplay = [
 	'Product Quantity',
 	'Product Status',
 	'Product Description',
-	'Consumer Address',
-	'Retailer Addresses',
-	'Distributor Address',
-	'Producer Address',
-	'Current StatusUser',
+	'Retailer Name',
+	'Distributor Name',
+	'Producer Name',
 ];
+
+const addressZero = '0x0000000000000000000000000000000000000000';
 
 export default class Home extends React.Component {
 	state = {
@@ -80,7 +78,7 @@ export default class Home extends React.Component {
 		isAuthenticated: null,
 		addressZero: '0x0000000000000000000000000000000000000000',
 		searchedProductId: '',
-		searchedProductDetails: [],
+		searchedProductDetails: null,
 	};
 
 	componentDidMount() {
@@ -257,7 +255,17 @@ export default class Home extends React.Component {
 			.reverse();
 	}
 
-	checkProductDetails(contractName) {
+	addressToUser = async (method, address) => {
+		try {
+			const data = await method(address).call();
+			return data.name;
+		} catch (err) {
+			console.log(err);
+			return '';
+		}
+	};
+
+	async checkProductDetails(contractName) {
 		const productDetailsArray =
 			contractName.getAllProductDetails[this.state.dataKey];
 
@@ -266,8 +274,43 @@ export default class Home extends React.Component {
 				productDetails.productId === this.state.searchedProductId
 		);
 
+		if (product.length === 0) return;
+
+		const contract = this.props.drizzle.contracts.SupplyChainLifecycle;
+
+		const producerName =
+			addressZero === product[0].producerAddress
+				? 'N.A.'
+				: await this.addressToUser(
+						contract.methods['getProducer'],
+						product[0].producerAddress
+				  );
+
+		const distributorName =
+			addressZero === product[0].distributorAddress
+				? 'N.A.'
+				: await this.addressToUser(
+						contract.methods['getDistributor'],
+						product[0].distributorAddress
+				  );
+
+		const retailerName =
+			addressZero === product[0].retailerAddresses
+				? 'N.A.'
+				: await this.addressToUser(
+						contract.methods['getRetailer'],
+						product[0].retailerAddresses
+				  );
+
+		product[0] = {
+			...product[0],
+			retailerAddresses: retailerName,
+			distributorAddress: distributorName,
+			producerAddress: producerName,
+		};
+
 		this.setState({
-			searchedProductDetails: product[0] || [],
+			searchedProductDetails: product[0],
 		});
 	}
 
@@ -385,8 +428,11 @@ export default class Home extends React.Component {
 								</Button>
 							</div>
 							<div>
-								{this.state.searchedProductDetails.length > 0 &&
+								{this.state.searchedProductDetails &&
 									productProp.map((ele, idx) => {
+										let temp = this.state.searchedProductDetails[ele];
+										if (ele === 'productPrice') temp /= 100;
+
 										return (
 											<div
 												style={{
@@ -397,15 +443,11 @@ export default class Home extends React.Component {
 											>
 												<h3>{productDisplay[idx]}:</h3>
 												&nbsp;
-												<div style={{ fontSize: 'larger' }}>
-													{this.state.searchedProductDetails[ele]}
-												</div>
+												<div style={{ fontSize: 'larger' }}>{temp}</div>
 											</div>
 										);
 									})}
-								{this.state.searchedProductDetails.length === 0 && (
-									<h1>No Product</h1>
-								)}
+								{!this.state.searchedProductDetails && <h1>No Product</h1>}
 							</div>
 						</Paper>
 					</div>

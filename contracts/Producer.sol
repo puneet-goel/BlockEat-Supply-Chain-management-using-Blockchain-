@@ -28,7 +28,7 @@ contract Producer {
         return producers.isExistingUser(msg.sender);
     }
 
-    function getProducer() public view returns (Users.Info memory) {
-        return producers.getUser(msg.sender);
+    function getProducer(address user) public view returns (Users.Info memory) {
+        return producers.getUser(user);
     }
 }

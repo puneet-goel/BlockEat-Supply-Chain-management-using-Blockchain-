@@ -39,7 +39,7 @@ export default ({
 				break;
 		}
 
-		method()
+		method(drizzleState.accounts[0])
 			.call()
 			.then((res) =>
 				setData({
@@ -48,7 +48,7 @@ export default ({
 				})
 			)
 			.catch((err) => console.log(err));
-	}, [userType, contract.methods]);
+	}, [userType, contract.methods, drizzleState.accounts]);
 
 	return (
 		<Menu

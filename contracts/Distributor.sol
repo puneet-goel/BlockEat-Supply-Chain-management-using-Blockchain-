@@ -29,7 +29,9 @@ contract Distributor {
         return distributors.isExistingUser(msg.sender);
     }
 
-    function getDistributor() public view returns (Users.Info memory) {
-        return distributors.getUser(msg.sender);
+    function getDistributor(
+        address user
+    ) public view returns (Users.Info memory) {
+        return distributors.getUser(user);
     }
 }
